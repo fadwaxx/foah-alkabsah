@@ -359,7 +359,7 @@ if (isAdmin !== "true") {
   const c = document.getElementById("bestsellers-grid");
   if (!c) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const now = new Date();
@@ -430,7 +430,7 @@ async function renderRevenueChart() {
   const c = document.getElementById("revenue-chart");
   if (!c) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const days = [];
@@ -515,7 +515,7 @@ async function renderPeakHours() {
   const container = document.getElementById("peak-hours");
   if (!container) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const hours = {};
@@ -546,10 +546,10 @@ async function renderUnsoldItems() {
   const container = document.getElementById("unsold-items");
   if (!container) return;
 
-  const menuRes = await fetch("http://localhost:5000/api/menu");
+  const menuRes = await fetch("/api/menu");
   const menu = await menuRes.json();
 
-  const ordersRes = await fetch("http://localhost:5000/api/orders");
+  const ordersRes = await fetch("/api/orders");
   const orders = await ordersRes.json();
 
   const now = new Date();
@@ -604,7 +604,7 @@ async function renderAdmin() {
   renderAdminMenuManager();
 }
 async function renderDashboardStats() {
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const now = new Date();
@@ -652,7 +652,7 @@ async function renderCustomersTable() {
   const t = document.getElementById("customers-table");
   if (!t) return;
 
-  const response = await fetch("http://localhost:5000/api/customers");
+  const response = await fetch("/api/customers");
   const customers = await response.json();
 
   const search = document.getElementById("customers-search")?.value.trim().toLowerCase() || "";
@@ -698,7 +698,7 @@ async function renderOrdersTable(tableId) {
   const t = document.getElementById(tableId);
   if (!t) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const search =
@@ -766,7 +766,7 @@ let currentMenuItems = [];
   const container = document.getElementById("admin-menu-manager-container");
   if (!container) return;
 
-  const response = await fetch("http://localhost:5000/api/menu");
+  const response = await fetch("/api/menu");
   const items = await response.json();
   currentMenuItems = items;
 
@@ -868,10 +868,7 @@ let currentMenuItems = [];
     </div>
   `;
 }
-function logoutAdmin() {
-  localStorage.removeItem("admin_logged_in");
-  window.location.href = "foah-alkabsah (1).html";
-}
+
 function addOptionGroup(data = null) {
   const container = document.getElementById("options-builder");
 
@@ -1011,8 +1008,8 @@ formData.append("options", JSON.stringify(options));
   }
 
   const url = editingId
-    ? `http://localhost:5000/api/menu/${editingId}`
-    : "http://localhost:5000/api/menu";
+    ? `/api/menu/${editingId}`
+    : "/api/menu";
 
   const method = editingId ? "PUT" : "POST";
 
@@ -1039,7 +1036,7 @@ async function renderCategorySales() {
   const list = document.getElementById("category-sales-list");
   if (!list) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const now = new Date();
@@ -1144,7 +1141,7 @@ async function renderCategorySales() {
 async function deleteMenuItem(id) {
   if (!confirm("هل تريدين حذف هذا الصنف؟")) return;
 
-  await fetch(`http://localhost:5000/api/menu/${id}`, {
+  await fetch(`/api/menu/${id}`, {
     method: "DELETE"
   });
 
@@ -1156,13 +1153,13 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAdmin();
 });
 async function showCustomerDetails(id) {
-  const customersResponse = await fetch("http://localhost:5000/api/customers");
+  const customersResponse = await fetch("/api/customers");
   const customers = await customersResponse.json();
 
   const customer = customers.find(c => c._id === id);
 
   const ordersResponse = await fetch(
-    `http://localhost:5000/api/customers/${id}/orders`
+    `/api/customers/${id}/orders`
   );
   const orders = await ordersResponse.json();
 
