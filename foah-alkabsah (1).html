@@ -1194,11 +1194,13 @@ function updateLoginButton() {
 
 document.addEventListener("DOMContentLoaded", updateLoginButton);
 
+
+
 async function loadHomeMenu() {
   const response = await fetch("/api/menu");
   menuItems = await response.json();
 
-  renderHomeMenuCards();
+  renderHomeMenuCards("all");
 }
 
 function renderHomeMenuCards(category = "all") {
@@ -1212,11 +1214,11 @@ function renderHomeMenuCards(category = "all") {
 
   container.innerHTML = filteredItems.map(item => `
     <div class="menu-card">
-
-      ${item.isNew && (!item.newUntil || new Date(item.newUntil) >= new Date())
-  ? `<div class="card-badge green">جديد</div>`
-  : ""
-}
+      ${
+        item.isNew
+          ? `<div class="card-badge green">جديد</div>`
+          : ""
+      }
 
       <div class="card-media-box">
         ${
@@ -1235,11 +1237,11 @@ function renderHomeMenuCards(category = "all") {
           <span class="price-num">${item.price}</span>
           <span class="price-cur">س.ر</span>
         </div>
-        <button class="btn-add-card" onclick="openItemDetails('${item._id}')">
-  +
-</button>
-      </div>
 
+        <button class="btn-add-card" onclick="openItemDetails('${item._id}')">
+          +
+        </button>
+      </div>
     </div>
   `).join("");
 }
