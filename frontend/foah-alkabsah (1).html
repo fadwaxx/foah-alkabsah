@@ -646,13 +646,7 @@ const defaultMenuItems = [
   {id:32,cat:'drinks',icon:'💧',ar:'ماء',en:'Water',price:1,image:'',desc:'مياه معدنية'},
 ];
 
-// قراءة المنيو المحدث من التخزين المحلي أو تحميل الافتراضي
-let menuItems;
-try {
-  menuItems = JSON.parse(localStorage.getItem('restaurant_menu')) || defaultMenuItems;
-} catch {
-  menuItems = defaultMenuItems;
-}
+let menuItems = [];
 
 const branches = [
   {num:'01',name:'الفرع الرئيسي — حي النزهة',address:'حائل، حي النزهة، شارع الملك فيصل',hours:'٩:٠٠ص – ١٢:٠٠م',phone:'05xxxxxxxx',status:'مفتوح الآن',mapUrl:'https://maps.google.com/?q=حي+النزهة+حائل+شارع+الملك+فيصل'},
@@ -964,7 +958,7 @@ async function renderOrdersTable(tableId) {
   const t = document.getElementById(tableId);
   if (!t) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   t.innerHTML = `<thead><tr>
@@ -995,7 +989,7 @@ async function renderRevenueChart() {
   const c = document.getElementById("revenue-chart");
   if (!c) return;
 
-  const response = await fetch("http://localhost:5000/api/orders");
+  const response = await fetch("/api/orders");
   const orders = await response.json();
 
   const days = [];
@@ -1062,12 +1056,12 @@ function renderBestsellers() {
 }
 
 async function showCustomerDetails(id) {
-  const customersResponse = await fetch("http://localhost:5000/api/customers");
+  const customersResponse = await fetch("/api/customers");
   const customers = await customersResponse.json();
 
   const customer = customers.find(c => c._id === id);
 
-  const ordersResponse = await fetch(`http://localhost:5000/api/customers/${id}/orders`);
+  const ordersResponse = await fetch(`/api/customers/${id}/orders`);
   const orders = await ordersResponse.json();
 
   const ordersText = orders.length
@@ -1194,11 +1188,13 @@ function updateLoginButton() {
 
 document.addEventListener("DOMContentLoaded", updateLoginButton);
 
+
+
 async function loadHomeMenu() {
-  const response = await fetch("http://localhost:5000/api/menu");
+  const response = await fetch("/api/menu");
   menuItems = await response.json();
 
-  renderHomeMenuCards();
+  renderHomeMenuCards("all");
 }
 
 function renderHomeMenuCards(category = "all") {
@@ -1212,11 +1208,11 @@ function renderHomeMenuCards(category = "all") {
 
   container.innerHTML = filteredItems.map(item => `
     <div class="menu-card">
-
-      ${item.isNew && (!item.newUntil || new Date(item.newUntil) >= new Date())
-  ? `<div class="card-badge green">جديد</div>`
-  : ""
-}
+      ${
+        item.isNew
+          ? `<div class="card-badge green">جديد</div>`
+          : ""
+      }
 
       <div class="card-media-box">
         ${
@@ -1235,11 +1231,11 @@ function renderHomeMenuCards(category = "all") {
           <span class="price-num">${item.price}</span>
           <span class="price-cur">س.ر</span>
         </div>
-        <button class="btn-add-card" onclick="openItemDetails('${item._id}')">
-  +
-</button>
-      </div>
 
+        <button class="btn-add-card" onclick="openItemDetails('${item._id}')">
+          +
+        </button>
+      </div>
     </div>
   `).join("");
 }
