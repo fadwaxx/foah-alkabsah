@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", updateAdminLinks);
     async function loadMyOrders() {
       if (!customer) return;
     
-      const res = await fetch(`http://localhost:5000/api/customers/${customer._id}/orders`);
+      const res = await fetch(`/api/customers/${customer._id}/orders`);
       const orders = await res.json();
     
       document.getElementById("my-orders-table").innerHTML = `
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", updateAdminLinks);
         email: document.getElementById("profile-email").value
       };
     
-      const res = await fetch(`http://localhost:5000/api/customers/${customer._id}`, {
+      const res = await fetch(`/api/customers/${customer._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData)
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", updateAdminLinks);
           const address = `https://www.google.com/maps?q=${lat},${lng}`;
     
           const res = await fetch(
-            `http://localhost:5000/api/customers/${customer._id}/location`,
+            `/api/customers/${customer._id}/location`,
             {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
