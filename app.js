@@ -367,11 +367,7 @@ app.use(express.json());
     }
   });
 app.use(express.static(path.join(__dirname, "frontend")));
-app.get("/foah-alkabsah (1).html", (req, res) => {
-    res.sendFile(
-      path.join(__dirname, "frontend", "foah-alkabsah (1).html")
-    );
-  });
+
   
   app.get("/order.html", (req, res) => {
     res.sendFile(
