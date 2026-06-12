@@ -13,9 +13,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "frontend")));
+ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-  app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+ 
 
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -63,7 +64,8 @@ app.use(express.static(path.join(__dirname, "frontend")));
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  });app.put("/api/menu/:id", upload.single("image"), async (req, res) => {
+  });
+  app.put("/api/menu/:id", upload.single("image"), async (req, res) => {
     try {
       let options = [];
   
@@ -364,7 +366,7 @@ app.use(express.static(path.join(__dirname, "frontend")));
       });
     }
   });
-
+app.use(express.static(path.join(__dirname, "frontend")));
 
 
 mongoose.connect(process.env.MONGO_URI)
