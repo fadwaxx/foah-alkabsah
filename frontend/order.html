@@ -297,7 +297,7 @@ async function loadMenu() {
   try {
 
     const response = await fetch(
-      "http://localhost:5000/api/menu"
+      "/api/menu"
     );
 
     menuItems = await response.json();
@@ -616,7 +616,7 @@ phone: currentCustomer?.phone || document.getElementById("order-phone")?.value |
   };
 
   const response = await fetch(
-    "http://localhost:5000/api/orders",
+    "/api/orders",
     {
       method: "POST",
       headers: {
