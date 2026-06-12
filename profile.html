@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>حسابي | فوح الكبسة</title>
+  <link rel="stylesheet" href="foah.css">
+</head>
+<body>
+    <nav id="main-nav">
+        <div class="nav-brand" onclick="window.location.href='foah-alkabsah (1).html'">فوح الكبسة</div>
+      
+        <ul class="nav-links">
+          <li><a href="foah-alkabsah (1).html">الرئيسية</a></li>
+          <li><a href="foah-alkabsah (1).html#about-section">قصتنا</a></li>
+          <li><a href="foah-alkabsah (1).html#menu-section">القائمة</a></li>
+          
+          <li><a href="foah-alkabsah (1).html#branches-section">الفروع</a></li>
+        </ul>
+      
+        <div class="nav-actions">
+          <button id="login-btn" class="btn-nav btn-nav-outline">دخول</button>
+          <button class="btn-nav btn-nav-primary" onclick="window.location.href='order.html'">اطلب الآن 🛒</button>
+        </div>
+      </nav>
+  <div class="chart-card" style="max-width:900px;margin:40px auto">
+    <h1>حسابي 👤</h1>
+
+    <div class="form-group">
+      <label class="form-label">الاسم</label>
+      <input id="profile-name" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">الجوال</label>
+      <input id="profile-phone" class="form-input">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">الإيميل</label>
+      <input id="profile-email" class="form-input">
+    </div>
+    <div class="form-group">
+        <label class="form-label">موقع التوصيل المحفوظ</label>
+        <div id="saved-address">لا يوجد موقع محفوظ</div>
+      </div>
+      
+      <button class="btn-primary" onclick="selectMyLocation()">
+        📍 تحديد موقعي الحالي
+      </button>
+      <a id="saved-address"
+      target="_blank">
+     عرض الموقع
+   </a>
+    <button class="btn-primary" onclick="updateProfile()">حفظ التعديلات</button>
+<button class="btn-outline" onclick="logoutCustomer()">
+    تسجيل خروج
+  </button>
+    <hr style="margin:30px 0">
+
+    <h2>طلباتي السابقة 📋</h2>
+    <table class="orders-table" id="my-orders-table"></table>
+  </div>
+  
+  <script>
+    let customer = null;
+    
+    function updateLoginButton() {
+      customer = JSON.parse(localStorage.getItem("current_customer") || "null");
+    
+      const btn = document.getElementById("login-btn");
+      if (!btn) return;
+    
+      if (customer) {
+        btn.textContent = customer.name || "حسابي";
+        btn.onclick = () => window.location.href = "profile.html";
+      } else {
+        btn.textContent = "دخول";
+        btn.onclick = () => window.location.href = "auth.html";
+      }
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      updateLoginButton();
+    
+      customer = JSON.parse(localStorage.getItem("current_customer") || "null");
+    
+      if (!customer) {
+        window.location.href = "auth.html";
+        return;
+      }
+    
+      document.getElementById("profile-name").value = customer.name || "";
+      document.getElementById("profile-phone").value = customer.phone || "";
+      document.getElementById("profile-email").value = customer.email || "";
+    
+      if (customer.location?.address) {
+        document.getElementById("saved-address").textContent =
+          customer.location.address;
+      }
+    
+      loadMyOrders();
+    });
+    function updateAdminLinks() {
+  document.querySelectorAll(".admin-nav-link").forEach(link => {
+    link.style.display =
+      localStorage.getItem("admin_logged_in") === "true"
+        ? "block"
+        : "none";
+  });
+}
+
+document.addEventListener("DOMContentLoaded", updateAdminLinks);
+    async function loadMyOrders() {
+      if (!customer) return;
+    
+      const res = await fetch(`http://localhost:5000/api/customers/${customer._id}/orders`);
+      const orders = await res.json();
+    
+      document.getElementById("my-orders-table").innerHTML = `
+        <thead>
+          <tr>
+            <th>رقم الطلب</th>
+            <th>التاريخ</th>
+            <th>المجموع</th>
+            <th>الحالة</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${orders.map(o => `
+            <tr>
+              <td>#${o._id.slice(-6)}</td>
+              <td>${new Date(o.createdAt).toLocaleString("ar-SA")}</td>
+              <td>${o.total} ر.س</td>
+              <td>${o.status || "pending"}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      `;
+    }
+    
+    async function updateProfile() {
+      if (!customer) return;
+    
+      const updatedData = {
+        name: document.getElementById("profile-name").value,
+        phone: document.getElementById("profile-phone").value,
+        email: document.getElementById("profile-email").value
+      };
+    
+      const res = await fetch(`http://localhost:5000/api/customers/${customer._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData)
+      });
+    
+      const updatedCustomer = await res.json();
+    
+      if (!res.ok) {
+        alert(updatedCustomer.message || "فشل تحديث البيانات");
+        return;
+      }
+    
+      localStorage.setItem("current_customer", JSON.stringify(updatedCustomer));
+      customer = updatedCustomer;
+    
+      updateLoginButton();
+      alert("تم تحديث بياناتك");
+    }
+    
+    async function selectMyLocation() {
+      if (!customer) {
+        window.location.href = "auth.html";
+        return;
+      }
+    
+      if (!navigator.geolocation) {
+        alert("المتصفح لا يدعم تحديد الموقع");
+        return;
+      }
+    
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const address = `https://www.google.com/maps?q=${lat},${lng}`;
+    
+          const res = await fetch(
+            `http://localhost:5000/api/customers/${customer._id}/location`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ lat, lng, address })
+            }
+          );
+    
+          const updatedCustomer = await res.json();
+    
+          if (!res.ok) {
+            alert(updatedCustomer.message || "فشل حفظ الموقع");
+            return;
+          }
+    
+          localStorage.setItem("current_customer", JSON.stringify(updatedCustomer));
+          customer = updatedCustomer;
+    
+          document.getElementById("saved-address").textContent =
+            updatedCustomer.location.address;
+    
+          alert("تم حفظ موقعك بنجاح");
+        },
+        () => {
+          alert("لم يتم السماح بالوصول للموقع");
+        }
+      );
+    }
+    
+    function logoutCustomer() {
+      localStorage.removeItem("current_customer");
+      localStorage.removeItem("cart");
+    
+      alert("تم تسجيل الخروج");
+      window.location.href = "foah-alkabsah (1).html";
+    }
+    </script>
+
+</body>
+</html>
