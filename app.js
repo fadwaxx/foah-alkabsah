@@ -367,6 +367,37 @@ app.use(express.json());
     }
   });
 app.use(express.static(path.join(__dirname, "frontend")));
+app.get("/foah-alkabsah (1).html", (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "frontend", "foah-alkabsah (1).html")
+    );
+  });
+  
+  app.get("/order.html", (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "frontend", "order.html")
+    );
+  });
+  
+  app.get("/auth.html", (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "frontend", "auth.html")
+    );
+  });
+  
+  app.get("/profile.html", (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "frontend", "profile.html")
+    );
+  });
+  
+  app.get("/admin.html", (req, res) => {
+    res.sendFile(
+      path.join(__dirname, "frontend", "admin.html")
+    );
+  });
+
+
 
 
 mongoose.connect(process.env.MONGO_URI)
