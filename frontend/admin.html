@@ -868,7 +868,10 @@ let currentMenuItems = [];
     </div>
   `;
 }
-
+function logoutAdmin() {
+  localStorage.removeItem("admin_logged_in");
+  window.location.href = "/";
+}
 function addOptionGroup(data = null) {
   const container = document.getElementById("options-builder");
 
