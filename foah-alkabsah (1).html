@@ -646,13 +646,7 @@ const defaultMenuItems = [
   {id:32,cat:'drinks',icon:'💧',ar:'ماء',en:'Water',price:1,image:'',desc:'مياه معدنية'},
 ];
 
-// قراءة المنيو المحدث من التخزين المحلي أو تحميل الافتراضي
-let menuItems;
-try {
-  menuItems = JSON.parse(localStorage.getItem('restaurant_menu')) || defaultMenuItems;
-} catch {
-  menuItems = defaultMenuItems;
-}
+let menuItems = [];
 
 const branches = [
   {num:'01',name:'الفرع الرئيسي — حي النزهة',address:'حائل، حي النزهة، شارع الملك فيصل',hours:'٩:٠٠ص – ١٢:٠٠م',phone:'05xxxxxxxx',status:'مفتوح الآن',mapUrl:'https://maps.google.com/?q=حي+النزهة+حائل+شارع+الملك+فيصل'},
