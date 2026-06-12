@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | فوح الكبسة</title>
+    <link rel="stylesheet" href="foah.css">
+</head>
+<body>
+    <button onclick="window.location.href='foah-alkabsah (1).html'">
+        العودة للرئيسية
+      </button>
+    <!-- ===== AUTH PAGE ===== -->
+    <div  id="page-auth">
+    <div class="auth-layout">
+      <div class="auth-left">
+        <div class="auth-left-bg"></div>
+        <div class="auth-left-content">
+          <div class="auth-logo">فوح الكبسة</div>
+          <div class="auth-logo-sub">FOAH ALKABSAH</div>
+          <div class="auth-dish-art">
+            <div class="auth-dish-circle">🫕</div>
+          </div>
+          <div class="auth-tagline">أصالة الطعم السعودي</div>
+          <div class="auth-tagline-sub">سجّل دخولك لتجربة طلب أسرع، وتتبع طلباتك، والاستمتاع بعروض حصرية.</div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-form-wrap">
+          <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login',this)">تسجيل الدخول</button>
+            <button class="auth-tab" onclick="switchAuthTab('register',this)">حساب جديد</button>
+          </div>
+          <!-- Login -->
+          <div class="auth-form active" id="auth-login">
+            <h2>أهلاً بعودتك 👋</h2>
+            <p>سجّل دخولك للمتابعة</p>
+            <div class="form-group">
+              <label class="form-label">البريد الإلكتروني أو الجوال</label>
+              <div class="input-with-icon">
+                <input id="login-email" class="form-input" placeholder="example@email.com">
+                <span class="input-icon">✉️</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label  class="form-label">كلمة المرور</label>
+              <div class="input-with-icon">
+                <input id="login-password" class="form-input" type="password" placeholder="••••••••">
+                <span class="input-icon">🔒</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-top:-0.5rem">
+              <a href="#" style="font-size:0.82rem;color:var(--green-mid);text-decoration:none">نسيت كلمة المرور؟</a>
+            </div>
+            <button class="btn-auth" onclick="handleLogin()">تسجيل الدخول ←</button>
+            <div class="auth-divider"><span>أو</span></div>
+            <button onclick="showAdminLogin()" class="btn-outline"style="width:100%;padding:0.8rem;border:1.5px solid var(--beige-darker);border-radius:var(--radius-md);background:#fff;font-family:'Tajawal',sans-serif;font-size:0.9rem;cursor:pointer;color:var(--text-mid)">
+              ⚙️ دخول كمسؤول (تجريبي)
+            </button>
+
+            <div id="admin-login-box" style="display:none">
+                <input id="admin-email" class="form-input" placeholder="إيميل المسؤول">
+                <input id="admin-password" class="form-input" type="password" placeholder="كلمة مرور المسؤول">
+              
+                <button class="btn-primary" onclick="handleAdminLogin()">
+                  دخول لوحة التحكم
+                </button>
+              </div>
+          </div>
+          <!-- Register -->
+          <div class="auth-form" id="auth-register">
+            <h2>انضم إلينا ✨</h2>
+            <p>أنشئ حسابك الآن وابدأ الطلب</p>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">الاسم الأول</label><input class="form-input" placeholder="الاسم الأول"></div>
+              <div class="form-group"><label class="form-label">اسم العائلة</label><input class="form-input" placeholder="اسم العائلة"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">رقم الجوال</label>
+              <input id="reg-phone" class="form-input" type="tel" placeholder="05xxxxxxxx" required pattern="^(05|5|\+9665)[0-9]{8}$"></div>
+            <div class="form-group">
+              <label class="form-label">البريد الإلكتروني</label>
+              <input id="reg-email" class="form-input" placeholder="example@email.com"></div>
+            <div class="form-group">
+              <label class="form-label">كلمة المرور</label>
+              <input id="reg-password" class="form-input" type="password" placeholder="٨ أحرف على الأقل"></div>
+            <div class="form-group"><label class="form-label">تأكيد كلمة المرور</label><input class="form-input" type="password" placeholder="أعد إدخال كلمة المرور"></div>
+            <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-top:-0.5rem;font-size:0.82rem;color:var(--text-mid)">
+              <input type="checkbox" style="margin-top:0.15rem;accent-color:var(--green-dark)">
+              <span>أوافق على <a href="#" style="color:var(--green-mid)">الشروط والأحكام</a> وسياسة الخصوصية</span>
+            </div>
+            <button class="btn-auth" onclick="handleRegister()">إنشاء الحساب ←</button>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    
+
+   
+    function switchAuthTab(tab, btn) {
+      document.querySelectorAll(".auth-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    
+      document.querySelectorAll(".auth-form").forEach(f => f.classList.remove("active"));
+    
+      document.getElementById("auth-" + tab).classList.add("active");
+    }
+    
+    async function handleLogin() {
+  const identifier = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
+
+  const response = await fetch("http://localhost:5000/api/customers/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ identifier, password })
+  });
+
+  const data = await response.json();
+
+
+
+if (!response.ok) {
+  alert(data.message || "حدث خطأ غير معروف");
+  return;
+}
+
+  localStorage.setItem("current_customer", JSON.stringify(data.customer));
+
+  alert("تم تسجيل الدخول");
+  window.location.href = "order.html";
+}
+    
+async function handleRegister() {
+  const firstName = document.querySelector("#auth-register input[placeholder='الاسم الأول']").value.trim();
+  const lastName = document.querySelector("#auth-register input[placeholder='اسم العائلة']").value.trim();
+  const phone = document.getElementById("reg-phone").value.trim();
+  const email = document.getElementById("reg-email").value.trim();
+  const password = document.getElementById("reg-password").value;
+
+  const name = `${firstName} ${lastName}`.trim();
+
+  if (!name || !phone || !password) {
+    alert("اكتبي الاسم ورقم الجوال وكلمة المرور");
+    return;
+  }
+
+  const response = await fetch("http://localhost:5000/api/customers/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, phone, email, password })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    alert(data.message || "فشل إنشاء الحساب");
+    return;
+  }
+
+  localStorage.setItem("current_customer", JSON.stringify(data.customer));
+
+  alert("تم إنشاء الحساب بنجاح");
+  window.location.href = "order.html";
+}
+function logoutAdmin() {
+  localStorage.removeItem("admin_logged_in");
+  window.location.href = "auth.html";
+}
+function showAdminLogin() {
+  document.getElementById("admin-login-box").style.display = "block";
+}
+
+function handleAdminLogin() {
+  const email = document.getElementById("admin-email").value.trim();
+  const password = document.getElementById("admin-password").value;
+
+  const adminEmail = "admin@foah.com";
+  const adminPassword = "123456";
+
+  if (email === adminEmail && password === adminPassword) {
+    localStorage.setItem("admin_logged_in", "true");
+    window.location.href = "admin.html";
+  } else {
+    alert("بيانات المسؤول غير صحيحة");
+  }
+}
+    </script>
+</body>
+</html>
