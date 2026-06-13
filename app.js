@@ -47,6 +47,15 @@ app.use(express.json());
 
   const Customer = require("./models/Customer");
   app.post("/api/menu", upload.single("image"), async (req, res) => {
+    if (req.file) {
+        console.log("🔥 CLOUDINARY CODE IS RUNNING");
+      
+        const uploadedImage = await uploadToCloudinary(req.file.buffer);
+        imagePath = uploadedImage.secure_url;
+      
+        console.log("✅ Cloudinary URL:", imagePath);
+      }
+      
     try {
         let imagePath = "";
 
