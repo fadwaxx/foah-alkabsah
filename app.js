@@ -5,11 +5,19 @@ const path = require("path");
 const multer = require("multer");
 const bcrypt = require("bcryptjs");
 
+const cloudinary = require("cloudinary").v2;
+
 require("dotenv").config();
 const MenuItem = require("./models/MenuItem");
 const Order = require("./models/Order");
 
 const app = express();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
 
 app.use(cors());
 app.use(express.json());
@@ -18,23 +26,34 @@ app.use(express.json());
 
  
 
-  const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "uploads/");
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + "-" + file.originalname);
-    }
-  });
+ const storage = multer.memoryStorage();
+ const upload = multer({ storage });
+
+ function uploadToCloudinary(fileBuffer) {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "clients/foah-kabsah/menu"
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
   
-  const upload = multer({ storage: storage });
+      stream.end(fileBuffer);
+    });
+  }
 
   const Customer = require("./models/Customer");
   app.post("/api/menu", upload.single("image"), async (req, res) => {
     try {
-      const imagePath = req.file
-        ? `/uploads/${req.file.filename}`
-        : "";
+        let imagePath = "";
+
+        if (req.file) {
+          const uploadedImage = await uploadToCloudinary(req.file.buffer);
+          imagePath = uploadedImage.secure_url;
+        }
   
       let options = [];
   
@@ -91,7 +110,8 @@ app.use(express.json());
       };
   
       if (req.file) {
-        updateData.image = `/uploads/${req.file.filename}`;
+        const uploadedImage = await uploadToCloudinary(req.file.buffer);
+        updateData.image = uploadedImage.secure_url;
       }
   
       const item = await MenuItem.findByIdAndUpdate(
